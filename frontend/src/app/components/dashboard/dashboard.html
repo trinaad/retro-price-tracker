@@ -1,0 +1,28 @@
+<div class="dashboard">
+    <h2>Retro Price Tracker</h2>
+
+    <div class="add-form">
+        <input type="text" placeholder="Item name (e.g. PS2 Slim)" [ngModel]="newName()"
+            (ngModelChange)="newName.set($event)" />
+        <input type="text" placeholder="Search term for marketplace" [ngModel]="newSearchTerm()"
+            (ngModelChange)="newSearchTerm.set($event)" />
+        <input type="number" placeholder="Target price ($)" [ngModel]="newTargetPrice()"
+            (ngModelChange)="newTargetPrice.set($event)" />
+        <button (click)="onAddItem()">Add Item</button>
+    </div>
+
+    <div class="items-list">
+        @for (item of items.items(); track item.id) {
+        <div class="item-card">
+            <div class="item-info">
+                <strong>{{ item.name }}</strong>
+                <span class="search-term">{{ item.search_term }}</span>
+                <span class="target">Target: ${{ item.target_price }}</span>
+            </div>
+            <button class="delete-btn" (click)="onDelete(item.id)">✕</button>
+        </div>
+        } @empty {
+        <p class="empty-state">No items tracked yet. Add one above.</p>
+        }
+    </div>
+</div>

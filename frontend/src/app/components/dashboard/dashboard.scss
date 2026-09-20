@@ -1,0 +1,98 @@
+.dashboard {
+  max-width: 640px;
+  margin: 3rem auto;
+  font-family:
+    'Inter',
+    -apple-system,
+    sans-serif;
+  color: #e7e9ec;
+
+  h2 {
+    margin-bottom: 1.5rem;
+  }
+
+  .add-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+
+    input {
+      flex: 1;
+      min-width: 140px;
+      padding: 0.7rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid #262b35;
+      background: #171b22;
+      color: #e7e9ec;
+      font-size: 0.9rem;
+
+      &::placeholder {
+        color: #565d6b;
+      }
+      &:focus {
+        outline: none;
+        border-color: #f2a93b;
+      }
+    }
+
+    button {
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      border: none;
+      background: #f2a93b;
+      color: #171203;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
+  .items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .item-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 1.1rem;
+    background: #171b22;
+    border: 1px solid #262b35;
+    border-radius: 8px;
+
+    .item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+
+      .search-term {
+        font-size: 0.8rem;
+        color: #8b93a1;
+      }
+      .target {
+        font-size: 0.8rem;
+        color: #3fb68b;
+      }
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: #565d6b;
+      cursor: pointer;
+      font-size: 1rem;
+
+      &:hover {
+        color: #e76f51;
+      }
+    }
+  }
+
+  .empty-state {
+    color: #565d6b;
+    text-align: center;
+    padding: 2rem;
+  }
+}
