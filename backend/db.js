@@ -8,6 +8,7 @@ db.exec(`
     name TEXT NOT NULL,
     search_term TEXT NOT NULL,
     target_price REAL NOT NULL,
+    email TEXT NOT NULL,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
   );
 

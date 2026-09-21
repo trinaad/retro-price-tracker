@@ -1,28 +1,49 @@
 <div class="dashboard">
-    <h2>Retro Price Tracker</h2>
+    <header>
+        <h1>🎮 Retro Price Tracker</h1>
+        <p class="tagline">Watching the shelves so you don't have to.</p>
+    </header>
 
     <div class="add-form">
-        <input type="text" placeholder="Item name (e.g. PS2 Slim)" [ngModel]="newName()"
+        <input type="text" placeholder="What are you hunting for?" [ngModel]="newName()"
             (ngModelChange)="newName.set($event)" />
         <input type="text" placeholder="Search term for marketplace" [ngModel]="newSearchTerm()"
             (ngModelChange)="newSearchTerm.set($event)" />
-        <input type="number" placeholder="Target price ($)" [ngModel]="newTargetPrice()"
+        <input type="number" placeholder="Target price" [ngModel]="newTargetPrice()"
             (ngModelChange)="newTargetPrice.set($event)" />
-        <button (click)="onAddItem()">Add Item</button>
+        <button (click)="onAddItem()">+ Track it</button>
     </div>
 
-    <div class="items-list">
+    <div class="items-grid">
         @for (item of items.items(); track item.id) {
-        <div class="item-card">
-            <div class="item-info">
-                <strong>{{ item.name }}</strong>
-                <span class="search-term">{{ item.search_term }}</span>
-                <span class="target">Target: ${{ item.target_price }}</span>
+        <div class="cartridge">
+            <div class="cartridge-top"></div>
+            <div class="cartridge-body">
+                <button class="delete-btn" (click)="onDelete(item.id)">✕</button>
+                <h3>{{ item.name }}</h3>
+                <p class="search-term">"{{ item.search_term }}"</p>
+                <div class="target-price">
+                    <span class="label">Waiting for</span>
+                    <span class="price">${{ item.target_price }}</span>
+                </div>
             </div>
-            <button class="delete-btn" (click)="onDelete(item.id)">✕</button>
         </div>
         } @empty {
-        <p class="empty-state">No items tracked yet. Add one above.</p>
+        <div class="empty-state">
+            <p>Nothing on the watchlist yet.</p>
+            <p class="hint">Add something above to start tracking.</p>
+        </div>
         }
     </div>
+    @if (showEmailPrompt()) {
+    <div class="email-overlay">
+        <div class="email-modal">
+            <h3>Where should we alert you?</h3>
+            <p>We'll use this for every item you track from this browser no account needed.</p>
+            <input type="email" placeholder="your@email.com" [ngModel]="emailInput()"
+                (ngModelChange)="emailInput.set($event)" (keyup.enter)="confirmEmail()" />
+            <button (click)="confirmEmail()">Continue</button>
+        </div>
+    </div>
+    }
 </div>

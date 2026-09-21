@@ -5,6 +5,7 @@ export interface TrackedItem {
   name: string;
   search_term: string;
   target_price: number;
+  email: string;
   created_at: string;
 }
 
@@ -14,20 +15,28 @@ export class ItemsService {
 
   items = signal<TrackedItem[]>([]);
 
+  getSavedEmail(): string | null {
+    return localStorage.getItem('retro_tracker_email');
+  }
+
+  saveEmail(email: string) {
+    localStorage.setItem('retro_tracker_email', email);
+  }
+
   async loadItems() {
     const res = await fetch(this.apiUrl);
     const data = await res.json();
     this.items.set(data);
   }
 
-  async addItem(name: string, search_term: string, target_price: number) {
+  async addItem(name: string, search_term: string, target_price: number, email: string) {
     const res = await fetch(this.apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, search_term, target_price }),
+      body: JSON.stringify({ name, search_term, target_price, email }),
     });
     const newItem = await res.json();
-    await this.loadItems(); // refresh the list
+    await this.loadItems();
     return newItem;
   }
 

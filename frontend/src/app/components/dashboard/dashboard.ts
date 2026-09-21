@@ -17,6 +17,9 @@ export class DashboardComponent implements OnInit {
   newSearchTerm = signal('');
   newTargetPrice = signal<number | null>(null);
 
+  showEmailPrompt = signal(false);
+  emailInput = signal('');
+
   ngOnInit() {
     this.items.loadItems();
   }
@@ -24,8 +27,27 @@ export class DashboardComponent implements OnInit {
   async onAddItem() {
     if (!this.newName() || !this.newSearchTerm() || !this.newTargetPrice()) return;
 
-    await this.items.addItem(this.newName(), this.newSearchTerm(), this.newTargetPrice()!);
+    const savedEmail = this.items.getSavedEmail();
 
+    if (!savedEmail) {
+      this.showEmailPrompt.set(true);
+      return;
+    }
+
+    await this.submitItem(savedEmail);
+  }
+
+  async confirmEmail() {
+    const email = this.emailInput().trim();
+    if (!email || !email.includes('@')) return;
+
+    this.items.saveEmail(email);
+    this.showEmailPrompt.set(false);
+    await this.submitItem(email);
+  }
+
+  private async submitItem(email: string) {
+    await this.items.addItem(this.newName(), this.newSearchTerm(), this.newTargetPrice()!, email);
     this.newName.set('');
     this.newSearchTerm.set('');
     this.newTargetPrice.set(null);
