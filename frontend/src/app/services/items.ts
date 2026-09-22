@@ -7,6 +7,8 @@ export interface TrackedItem {
   target_price: number;
   email: string;
   created_at: string;
+  last_price: number | null;
+  last_checked: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -43,5 +45,17 @@ export class ItemsService {
   async deleteItem(id: number) {
     await fetch(`${this.apiUrl}/${id}`, { method: 'DELETE' });
     await this.loadItems();
+  }
+
+  async previewSearch(term: string) {
+    const res = await fetch(
+      `http://localhost:3001/api/items/search-preview/${encodeURIComponent(term)}`,
+    );
+    return res.json();
+  }
+
+  async checkNow() {
+    await fetch('http://localhost:3001/api/check-now', { method: 'POST' });
+    await this.loadItems(); // refresh to show updated "last seen" prices
   }
 }

@@ -7,12 +7,33 @@
     <div class="add-form">
         <input type="text" placeholder="What are you hunting for?" [ngModel]="newName()"
             (ngModelChange)="newName.set($event)" />
-        <input type="text" placeholder="Search term for marketplace" [ngModel]="newSearchTerm()"
-            (ngModelChange)="newSearchTerm.set($event)" />
+        <input type="text" class="search-input" placeholder="Marketplace search term" [ngModel]="newSearchTerm()"
+            (ngModelChange)="onSearchTermChange($event)" />
         <input type="number" placeholder="Target price" [ngModel]="newTargetPrice()"
             (ngModelChange)="newTargetPrice.set($event)" />
         <button (click)="onAddItem()">+ Track it</button>
     </div>
+
+    @if (previewResults().length > 0) {
+    <div class="price-preview">
+        <p class="preview-label">Current listings for this search:</p>
+        @for (result of previewResults(); track $index) {
+        <div class="preview-row">
+            <span class="preview-title">{{ result.title }}</span>
+            <span class="preview-price">${{ result.price }}</span>
+        </div>
+        }
+    </div>
+    }
+
+    @if (items.items().length > 0) {
+    <div class="watchlist-header">
+        <h2>Your Watchlist</h2>
+        <button class="check-now-btn" (click)="onCheckNow()" [disabled]="checkingNow()">
+            {{ checkingNow() ? 'Refreshing…' : '🔄 Refresh tracked prices' }}
+        </button>
+    </div>
+    }
 
     <div class="items-grid">
         @for (item of items.items(); track item.id) {
@@ -22,10 +43,19 @@
                 <button class="delete-btn" (click)="onDelete(item.id)">✕</button>
                 <h3>{{ item.name }}</h3>
                 <p class="search-term">"{{ item.search_term }}"</p>
+
                 <div class="target-price">
-                    <span class="label">Waiting for</span>
+                    <span class="label">Target</span>
                     <span class="price">${{ item.target_price }}</span>
                 </div>
+
+                @if (item.last_price) {
+                <div class="last-price" [class.below-target]="item.last_price <= item.target_price">
+                    Last seen: ${{ item.last_price }}
+                </div>
+                } @else {
+                <div class="last-price pending">Not checked yet</div>
+                }
             </div>
         </div>
         } @empty {
@@ -35,11 +65,12 @@
         </div>
         }
     </div>
+
     @if (showEmailPrompt()) {
     <div class="email-overlay">
         <div class="email-modal">
             <h3>Where should we alert you?</h3>
-            <p>We'll use this for every item you track from this browser no account needed.</p>
+            <p>We'll use this for every item you track from this browser — no account needed.</p>
             <input type="email" placeholder="your@email.com" [ngModel]="emailInput()"
                 (ngModelChange)="emailInput.set($event)" (keyup.enter)="confirmEmail()" />
             <button (click)="confirmEmail()">Continue</button>

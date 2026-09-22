@@ -64,6 +64,48 @@
     }
   }
 
+  .price-preview {
+    background: #fffdf8;
+    border: 1px solid #e3dccb;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    margin-bottom: 1.5rem;
+
+    .preview-label {
+      font-size: 0.78rem;
+      color: #a69c8a;
+      margin: 0 0 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .preview-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.35rem 0;
+      font-size: 0.85rem;
+      border-bottom: 1px solid #f0ebdd;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .preview-title {
+        color: #2a2622;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .preview-price {
+        font-weight: 600;
+        color: #2f6f5e;
+        flex-shrink: 0;
+      }
+    }
+  }
+
   .items-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -117,6 +159,22 @@
         }
       }
 
+      .last-price {
+        margin-top: 0.5rem;
+        font-size: 0.78rem;
+        color: #7a7266;
+
+        &.below-target {
+          color: #2f6f5e;
+          font-weight: 600;
+        }
+
+        &.pending {
+          font-style: italic;
+          color: #a69c8a;
+        }
+      }
+
       .delete-btn {
         position: absolute;
         top: 1rem;
@@ -145,6 +203,7 @@
       margin-top: 0.3rem;
     }
   }
+
   .email-overlay {
     position: fixed;
     inset: 0;
@@ -200,5 +259,45 @@
       font-weight: 600;
       cursor: pointer;
     }
+  }
+
+  .watchlist-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      margin: 0;
+    }
+  }
+
+  .check-now-btn {
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    border: 1px solid #e3dccb;
+    background: #fffdf8;
+    color: #2a2622;
+    font-size: 0.78rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+
+    &:hover:not(:disabled) {
+      border-color: #b33a3a;
+    }
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+  .add-form input {
+    font-size: 0.82rem;
+    padding: 0.75rem 0.8rem;
+  }
+  .add-form .search-input {
+    flex: 1.4; // takes up more space than the other two inputs
   }
 }

@@ -1,14 +1,33 @@
 import express from "express";
 import db from "./db.js";
+import { searchListings } from "./ebay.js";
 
 const router = express.Router();
 
 // Get all tracked items
 router.get("/", (req, res) => {
   const items = db
-    .prepare("SELECT * FROM tracked_items ORDER BY created_at DESC")
+    .prepare(
+      `
+    SELECT
+      ti.*,
+      (SELECT price FROM price_history WHERE item_id = ti.id ORDER BY checked_at DESC LIMIT 1) as last_price,
+      (SELECT checked_at FROM price_history WHERE item_id = ti.id ORDER BY checked_at DESC LIMIT 1) as last_checked
+    FROM tracked_items ti
+    ORDER BY ti.created_at DESC
+  `,
+    )
     .all();
   res.json(items);
+});
+
+router.get("/search-preview/:term", async (req, res) => {
+  try {
+    const results = await searchListings(req.params.term);
+    res.json(results.slice(0, 5)); // just show top 5 for preview
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Add a new tracked item

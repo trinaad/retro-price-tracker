@@ -1,9 +1,9 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import db from "./db.js";
+import cron from "node-cron";
 import itemsRoutes from "./items.js";
-import { sendPriceAlert } from "./email.js";
+import { checkAllItems } from "./priceCheck.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -13,24 +13,21 @@ app.use(express.json());
 app.use("/api/items", itemsRoutes);
 
 app.get("/", (req, res) => {
-  res.json({ status: "Backend running", db: "connected" });
+  res.json({ status: "Backend running" });
+});
+
+// Manually trigger a price check for all tracked items (real feature, not a test route)
+app.post("/api/check-now", async (req, res) => {
+  await checkAllItems();
+  res.json({ done: true });
+});
+
+// Runs automatically every 6 hours
+cron.schedule("0 */6 * * *", async () => {
+  console.log("Running scheduled price check...");
+  await checkAllItems();
 });
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
-});
-// Temporary test route
-app.get("/test-email", async (req, res) => {
-  try {
-    await sendPriceAlert(
-      "trinaadchowdary@gmail.com", // put YOUR actual email here — the one you signed up to Resend with
-      "PS2 Slim",
-      45,
-      50,
-      "https://ebay.com",
-    );
-    res.json({ sent: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });

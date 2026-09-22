@@ -11,7 +11,7 @@ export async function sendPriceAlert(
 ) {
   try {
     const result = await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "Retro Price Tracker <onboarding@resend.dev>",
       to: toEmail,
       subject: `🎮 Price drop: ${itemName} is now $${currentPrice}`,
       html: `
