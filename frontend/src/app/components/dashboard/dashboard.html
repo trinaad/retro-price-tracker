@@ -18,7 +18,8 @@
     <div class="price-preview">
         <p class="preview-label">Current listings for this search:</p>
         @for (result of previewResults(); track $index) {
-        <div class="preview-row">
+        <div (click)="onSelectListing(result.price, result.title, $index)" class="preview-row"
+            [class.selected]="selectedIndex() === $index">
             <span class="preview-title">{{ result.title }}</span>
             <span class="preview-price">${{ result.price }}</span>
         </div>

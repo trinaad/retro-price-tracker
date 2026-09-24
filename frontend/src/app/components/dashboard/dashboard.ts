@@ -16,6 +16,8 @@ export class DashboardComponent implements OnInit {
   newName = signal('');
   newSearchTerm = signal('');
   newTargetPrice = signal<number | null>(null);
+  selectedIndex = signal<number | null>(null);
+  selectedTitle = signal<string>('');
 
   showEmailPrompt = signal(false);
   emailInput = signal('');
@@ -78,9 +80,16 @@ export class DashboardComponent implements OnInit {
   }
 
   private async submitItem(email: string) {
-    await this.items.addItem(this.newName(), this.newSearchTerm(), this.newTargetPrice()!, email);
+    await this.items.addItem(
+      this.newName(),
+      this.newSearchTerm(),
+      this.selectedTitle(),
+      this.newTargetPrice()!,
+      email,
+    );
     this.newName.set('');
     this.newSearchTerm.set('');
+    this.selectedTitle.set('');
     this.newTargetPrice.set(null);
     this.previewResults.set([]);
   }
@@ -93,5 +102,11 @@ export class DashboardComponent implements OnInit {
     this.checkingNow.set(true);
     await this.items.checkNow();
     this.checkingNow.set(false);
+  }
+
+  onSelectListing(price: number, title: string, index: number) {
+    this.newTargetPrice.set(price);
+    this.selectedIndex.set(index);
+    this.selectedTitle.set(title);
   }
 }

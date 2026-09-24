@@ -83,12 +83,22 @@
       display: flex;
       justify-content: space-between;
       gap: 1rem;
-      padding: 0.35rem 0;
+      padding: 0.35rem 0.5rem;
       font-size: 0.85rem;
-      border-bottom: 1px solid #f0ebdd;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      transition:
+        border-color 0.15s ease,
+        background 0.15s ease;
 
-      &:last-child {
-        border-bottom: none;
+      &:hover {
+        background: #f0ebdd;
+      }
+
+      &.selected {
+        border-color: #b33a3a;
+        background: #fbeeea;
       }
 
       .preview-title {

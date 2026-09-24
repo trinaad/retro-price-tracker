@@ -32,45 +32,31 @@ router.get("/search-preview/:term", async (req, res) => {
 
 // Add a new tracked item
 router.post("/", (req, res) => {
-  const { name, search_term, target_price, email } = req.body;
+  const { name, search_term, reference_title, target_price, email } = req.body;
 
-  if (!name || !search_term || !target_price || !email) {
+  if (!name || !search_term || !reference_title || !target_price || !email) {
     return res.status(400).json({
-      error: "name, search_term, target_price, and email are required",
+      error:
+        "name, search_term, reference_title, target_price, and email are required",
     });
   }
 
   const stmt = db.prepare(
-    "INSERT INTO tracked_items (name, search_term, target_price, email) VALUES (?, ?, ?, ?)",
+    "INSERT INTO tracked_items (name, search_term, reference_title, target_price, email) VALUES (?, ?, ?, ?, ?)",
   );
-  const result = stmt.run(name, search_term, target_price, email);
-
-  res.json({
-    id: result.lastInsertRowid,
+  const result = stmt.run(
     name,
     search_term,
+    reference_title,
     target_price,
     email,
-  });
-});
-router.post("/", (req, res) => {
-  const { name, search_term, target_price, email } = req.body;
-
-  if (!name || !search_term || !target_price || !email) {
-    return res.status(400).json({
-      error: "name, search_term, target_price, and email are required",
-    });
-  }
-
-  const stmt = db.prepare(
-    "INSERT INTO tracked_items (name, search_term, target_price, email) VALUES (?, ?, ?, ?)",
   );
-  const result = stmt.run(name, search_term, target_price, email);
 
   res.json({
     id: result.lastInsertRowid,
     name,
     search_term,
+    reference_title,
     target_price,
     email,
   });

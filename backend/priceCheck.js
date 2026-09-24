@@ -2,6 +2,21 @@ import db from "./db.js";
 import { searchListings } from "./ebay.js";
 import { sendPriceAlert } from "./email.js";
 
+function titleSimilarity(candidateTitle, referenceTitle) {
+  const candidateWords = candidateTitle.toLowerCase().split(" ");
+  const referenceWords = referenceTitle.toLowerCase().split(" ");
+
+  let count = 0;
+
+  for (const word of candidateWords) {
+    if (referenceWords.includes(word)) {
+      count = count + 1;
+    }
+  }
+
+  return count;
+}
+
 export async function checkItemPrice(item) {
   const listings = await searchListings(item.search_term);
 
@@ -10,28 +25,34 @@ export async function checkItemPrice(item) {
     return;
   }
 
-  const topMatches = listings.slice(0, 3);
-  const lowest = topMatches.reduce(
-    (min, l) => (l.price < min.price ? l : min),
-    topMatches[0],
-  );
+  // Find the listing whose title is most similar to what the user originally picked
+  let bestMatch = listings[0];
+  let bestScore = titleSimilarity(listings[0].title, item.reference_title);
+
+  for (const listing of listings) {
+    const score = titleSimilarity(listing.title, item.reference_title);
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = listing;
+    }
+  }
 
   db.prepare("INSERT INTO price_history (item_id, price) VALUES (?, ?)").run(
     item.id,
-    lowest.price,
+    bestMatch.price,
   );
 
   console.log(
-    `${item.name}: lowest current price $${lowest.price} (target $${item.target_price})`,
+    `${item.name}: best match "${bestMatch.title}" — $${bestMatch.price} (target $${item.target_price})`,
   );
 
-  if (lowest.price <= item.target_price) {
+  if (bestMatch.price <= item.target_price) {
     await sendPriceAlert(
       item.email,
       item.name,
-      lowest.price,
+      bestMatch.price,
       item.target_price,
-      lowest.url,
+      bestMatch.url,
     );
     console.log(`Alert sent for ${item.name}`);
   }

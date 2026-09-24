@@ -7,6 +7,7 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     search_term TEXT NOT NULL,
+    reference_title TEXT,
     target_price REAL NOT NULL,
     email TEXT NOT NULL,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP

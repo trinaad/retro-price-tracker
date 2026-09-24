@@ -31,11 +31,17 @@ export class ItemsService {
     this.items.set(data);
   }
 
-  async addItem(name: string, search_term: string, target_price: number, email: string) {
+  async addItem(
+    name: string,
+    search_term: string,
+    reference_title: string,
+    target_price: number,
+    email: string,
+  ) {
     const res = await fetch(this.apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, search_term, target_price, email }),
+      body: JSON.stringify({ name, search_term, reference_title, target_price, email }),
     });
     const newItem = await res.json();
     await this.loadItems();
